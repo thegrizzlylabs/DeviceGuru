@@ -2,6 +2,6 @@
 
 @testable import DeviceGuru
 
-final class HardwareDetailProviderMock: HardwareDetailProvider {
+final class GSKHardwareDetailProviderMock: GSKHardwareDetailProvider {
     var hardwareString: String = "iPhone12,8"
 }

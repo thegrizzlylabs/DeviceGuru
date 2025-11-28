@@ -122,7 +122,7 @@ func main() {
     let enumFile = "Hardware.swift"
 
     var enumString = "// Copyright @DeviceGuru\n"
-        + "\npublic enum Hardware {\n"
+        + "\npublic enum GSKHardware {\n"
         + "\n\(tabSpacing)case \(unknownCase)"
         + "\n\(tabSpacing)case \(unknownIphoneCase)"
         + "\n\(tabSpacing)case \(unknownIpodCase)"
@@ -194,10 +194,10 @@ func main() {
 
     print("Creating \(extensionFile)")
     do {
-        let extensionFileConent = "\npublic extension DeviceGuruImplementation {\n\n"
+        let extensionFileConent = "\npublic extension GSKDeviceGuruImplementation {\n\n"
             + "\(tabSpacing)/// This should be same as cocoa pod version\n"
             + "\(tabSpacing)static var libraryVersion: String { \"<#Major#>.<#Minor#>.<#Fixes#>\" }\n\n"
-            + "\(tabSpacing)var hardware: Hardware {\n"
+            + "\(tabSpacing)var hardware: GSKHardware {\n"
             + hardwareFuncContent
             + "\n\n"
             + "\(tabSpacing)\(tabSpacing)//log message that your device is not present in the list\n"

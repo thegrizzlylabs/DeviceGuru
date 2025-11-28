@@ -4,14 +4,14 @@
 
 import Foundation
 
-public enum DeviceGuruException: Error {
+public enum GSKDeviceGuruException: Error {
     case deviceNotPresentInThePlist(String)
     case unableToCreateDeviceVersion(String)
 }
 
-public final class DeviceGuruImplementation: DeviceGuru {
+public final class GSKDeviceGuruImplementation: GSKDeviceGuru {
 
-    private enum LocalStorageKeys {
+    private enum GSKLocalStorageKeys {
         static let hardwareDetail = "github.com/InderKumarRathore/DeviceGuru.HardwareDetail.Key"
         static let deviceGuruVersion = "github.com/InderKumarRathore/DeviceGuru.Version.Key"
     }
@@ -30,16 +30,16 @@ public final class DeviceGuruImplementation: DeviceGuru {
         hardwareDetailProvider.hardwareString
     }()
 
-    private let localStorage: LocalStorage
-    private let hardwareDetailProvider: HardwareDetailProvider
+    private let localStorage: GSKLocalStorage
+    private let hardwareDetailProvider: GSKHardwareDetailProvider
     private let plistPath: String?
 
     /// Initializes the DeviceGuru
     /// - Parameters:
     ///   - localStorage: Provide any local storage where you want to save data related to the device, by default it uses `UserDefaults`
     ///   - plistPath: Provide plist file path, if passed nil it will search for appropriate bundles and load it for you.
-    public init(localStorage: LocalStorage = UserDefaults.standard,
-                hardwareDetailProvider: HardwareDetailProvider = HardwareDetailProviderImplementation(),
+    public init(localStorage: GSKLocalStorage = UserDefaults.standard,
+                hardwareDetailProvider: GSKHardwareDetailProvider = GSKHardwareDetailProviderImplementation(),
                 plistPath: String? = nil) {
         self.localStorage = localStorage
         self.hardwareDetailProvider = hardwareDetailProvider
@@ -48,7 +48,7 @@ public final class DeviceGuruImplementation: DeviceGuru {
 
     public var hardwareString: String { _hardwareString }
 
-    public var platform: Platform {
+    public var platform: GSKPlatform {
         let hardware = hardwareString
         if (hardware.hasPrefix("iPhone"))    { return .iPhone }
         if (hardware.hasPrefix("iPod"))      { return .iPodTouch }
@@ -76,15 +76,15 @@ public final class DeviceGuruImplementation: DeviceGuru {
 
         //log message that your device is not present in the list
         logMessage(hardwareString)
-        throw DeviceGuruException.deviceNotPresentInThePlist(hardwareString)
+        throw GSKDeviceGuruException.deviceNotPresentInThePlist(hardwareString)
     }
 
-    public func deviceVersion() throws -> DeviceVersion {
+    public func deviceVersion() throws -> GSKDeviceVersion {
         guard let versionString = findMatch(for: "[\\d]*,[\\d]*", in: hardwareString),
               let version = getVersion(from: versionString) else {
             print("Can't create Version from: \(hardwareString)")
             print("Please report the above log to: https://github.com/InderKumarRathore/DeviceGuru")
-            throw DeviceGuruException.unableToCreateDeviceVersion(hardwareString)
+            throw GSKDeviceGuruException.unableToCreateDeviceVersion(hardwareString)
         }
         return version
     }
@@ -104,7 +104,7 @@ public final class DeviceGuruImplementation: DeviceGuru {
 
 // MARK: - Private Static methods
 
-private extension DeviceGuruImplementation {
+private extension GSKDeviceGuruImplementation {
 
     func findMatch(for regex: String, in text: String) -> String? {
         do {
@@ -123,7 +123,7 @@ private extension DeviceGuruImplementation {
         }
     }
 
-    func getVersion(from string: String) -> DeviceVersion? {
+    func getVersion(from string: String) -> GSKDeviceVersion? {
         let components = string.components(separatedBy: ",")
         guard components.count == 2 else {
             print("Can't create components of string: \(string)")
@@ -136,18 +136,18 @@ private extension DeviceGuruImplementation {
             print("Can't create major: \(majorString) and  minor: \(minorString)")
             return nil
         }
-        return DeviceVersion(major: major, minor: minor)
+        return GSKDeviceVersion(major: major, minor: minor)
     }
 
     func loadHardwareDetailFromUserDefaultsIfLatest() -> [String: Any]? {
-        let libraryVersion = localStorage.object(forKey: LocalStorageKeys.deviceGuruVersion) as? String
+        let libraryVersion = localStorage.object(forKey: GSKLocalStorageKeys.deviceGuruVersion) as? String
         guard libraryVersion == Self.libraryVersion else { return nil }
-        return localStorage.object(forKey: LocalStorageKeys.hardwareDetail) as? [String: Any]
+        return localStorage.object(forKey: GSKLocalStorageKeys.hardwareDetail) as? [String: Any]
     }
 
     func saveHardwareDetailToUserDefaults(hardwareDetail: [String: Any]?) {
-        localStorage.setValue(Self.libraryVersion, forKey: LocalStorageKeys.deviceGuruVersion)
-        localStorage.setValue(hardwareDetail, forKey: LocalStorageKeys.hardwareDetail)
+        localStorage.setValue(Self.libraryVersion, forKey: GSKLocalStorageKeys.deviceGuruVersion)
+        localStorage.setValue(hardwareDetail, forKey: GSKLocalStorageKeys.hardwareDetail)
     }
 
     func loadAllDeviceDictionaryFromPlist() -> [String: AnyObject] {
@@ -172,7 +172,7 @@ private extension DeviceGuruImplementation {
             return dictionary
         }
 
-        assertionFailure("Unable to find \(Constants.plistFileName).\(Constants.plistFileType)")
+        assertionFailure("Unable to find \(GSKConstants.plistFileName).\(GSKConstants.plistFileType)")
         return [:]
     }
 
@@ -193,7 +193,7 @@ private extension DeviceGuruImplementation {
                   return nil
               }
 
-        guard let path = bundle.path(forResource: Constants.plistFileName, ofType: Constants.plistFileType),
+        guard let path = bundle.path(forResource: GSKConstants.plistFileName, ofType: GSKConstants.plistFileType),
               let dictionary = NSDictionary(contentsOfFile: path) as? [String: AnyObject] else {
                   assertionFailure("DeviceList.plist not found in the bundle.")
                   return nil
@@ -204,7 +204,7 @@ private extension DeviceGuruImplementation {
     func loadDeviceDictionaryFromFrameworkBundle() -> [String: AnyObject]? {
         let bundle = Bundle(for: type(of: self))
 
-        guard let path = bundle.path(forResource: Constants.plistFileName, ofType: Constants.plistFileType),
+        guard let path = bundle.path(forResource: GSKConstants.plistFileName, ofType: GSKConstants.plistFileType),
               let dictionary = NSDictionary(contentsOfFile: path) as? [String: AnyObject] else {
            return nil
         }
@@ -213,7 +213,7 @@ private extension DeviceGuruImplementation {
     }
 
     func loadDeviceDictionaryFromMainBundle() -> [String: AnyObject]? {
-        guard let path = Bundle.main.path(forResource: Constants.plistFileName, ofType: Constants.plistFileType),
+        guard let path = Bundle.main.path(forResource: GSKConstants.plistFileName, ofType: GSKConstants.plistFileType),
               let dictionary = NSDictionary(contentsOfFile: path) as? [String: AnyObject] else {
            return nil
        }
@@ -238,9 +238,9 @@ private extension DeviceGuruImplementation {
 
 // Mark:- Private UserDefaults
 
-extension UserDefaults: LocalStorage {}
+extension UserDefaults: GSKLocalStorage {}
 
-private enum Constants {
+private enum GSKConstants {
     static let plistFileName = "DeviceList"
     static let plistFileType = "plist"
 }

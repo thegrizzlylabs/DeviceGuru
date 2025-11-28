@@ -56,7 +56,7 @@ import DeviceGuru
 ```
 In your code:
 ``` swift
-let deviceGuru = DeviceGuruImplementation()
+let deviceGuru = GSKDeviceGuruImplementation()
 let deviceName = deviceGuru.hardware
 let deviceCode = deviceGuru.hardwareString
 let platform = deviceGuru.platform

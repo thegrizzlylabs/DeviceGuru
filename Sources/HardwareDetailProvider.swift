@@ -2,11 +2,11 @@
 
 import Foundation
 
-public protocol HardwareDetailProvider {
+public protocol GSKHardwareDetailProvider {
     var hardwareString: String { get }
 }
 
-public struct HardwareDetailProviderImplementation: HardwareDetailProvider {
+public struct GSKHardwareDetailProviderImplementation: GSKHardwareDetailProvider {
 
     public init() {}
 

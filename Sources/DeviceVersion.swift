@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct DeviceVersion: Comparable {
+public struct GSKDeviceVersion: Comparable {
     public let major: Int
     public let minor: Int
 
@@ -11,7 +11,7 @@ public struct DeviceVersion: Comparable {
         self.minor = minor
     }
 
-    public static func < (lhs: DeviceVersion, rhs: DeviceVersion) -> Bool {
+    public static func < (lhs: GSKDeviceVersion, rhs: GSKDeviceVersion) -> Bool {
         if lhs.major == rhs.major {
             return lhs.minor < rhs.minor
         } else {
@@ -19,7 +19,7 @@ public struct DeviceVersion: Comparable {
         }
     }
 
-    public static func == (lhs: DeviceVersion, rhs: DeviceVersion) -> Bool {
+    public static func == (lhs: GSKDeviceVersion, rhs: GSKDeviceVersion) -> Bool {
         lhs.major == rhs.major && lhs.minor == rhs.minor
     }
 }

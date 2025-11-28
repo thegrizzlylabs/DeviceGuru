@@ -1,6 +1,6 @@
 // Copyright @DeviceGuru
 
-public enum Hardware {
+public enum GSKHardware {
 
     case unknownDevice
     case unknownIphone

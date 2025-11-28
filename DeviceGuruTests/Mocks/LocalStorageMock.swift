@@ -2,7 +2,7 @@
 
 @testable import DeviceGuru
 
-final class LocalStorageMock: LocalStorage {
+final class GSKLocalStorageMock: GSKLocalStorage {
 
     var dictionary: [String: Any] = [:]
 

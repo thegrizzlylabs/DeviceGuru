@@ -2,7 +2,7 @@
 
 import Foundation
 
-public enum Platform {
+public enum GSKPlatform {
     case iPhone
     case iPodTouch
     case iPad

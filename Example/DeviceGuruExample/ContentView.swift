@@ -10,13 +10,13 @@ import DeviceGuru
 
 struct ContentView: View {
 
-    private let guru = DeviceGuruImplementation()
+    private let guru = GSKDeviceGuruImplementation()
 
-    private var name: Hardware { guru.hardware }
+    private var name: GSKHardware { guru.hardware }
     private var code: String { guru.hardwareString }
-    private var platform: Platform { guru.platform }
+    private var platform: GSKPlatform { guru.platform }
     private var description: String? { try? guru.hardwareDescription() }
-    private var deviceVersion: DeviceVersion? { try? guru.deviceVersion() }
+    private var deviceVersion: GSKDeviceVersion? { try? guru.deviceVersion() }
 
     var body: some View {
         VStack {

@@ -1,10 +1,10 @@
 
-public extension DeviceGuruImplementation {
+public extension GSKDeviceGuruImplementation {
 
     /// This should be same as cocoa pod version
     static var libraryVersion: String { "10.0.10" }
 
-    var hardware: Hardware {
+    var hardware: GSKHardware {
 
         if (hardwareString == "AppleTV1,1") { return .apple_tv_1g }
         if (hardwareString == "AppleTV11,1") { return .apple_tv_4k_2g }

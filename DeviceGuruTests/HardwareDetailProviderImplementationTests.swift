@@ -4,10 +4,10 @@ import XCTest
 
 @testable import DeviceGuru
 
-final class HardwareDetailProviderImplementationTests: XCTestCase {
+final class GSKHardwareDetailProviderImplementationTests: XCTestCase {
 
     func testExample() {
-        let hardwareProvider = HardwareDetailProviderImplementation()
+        let hardwareProvider = GSKHardwareDetailProviderImplementation()
         XCTAssertTrue(hardwareProvider.hardwareString.contains("iPhone"))
     }
 }

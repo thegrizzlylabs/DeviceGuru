@@ -3,22 +3,22 @@
 import XCTest
 @testable import DeviceGuru
 
-final class DeviceGuruTests: XCTestCase {
+final class GSKDeviceGuruTests: XCTestCase {
 
-    private var sut: DeviceGuruImplementation!
-    private var localStorageMock: LocalStorageMock!
-    private var hardwareDetailProviderMock: HardwareDetailProviderMock!
+    private var sut: GSKDeviceGuruImplementation!
+    private var localStorageMock: GSKLocalStorageMock!
+    private var hardwareDetailProviderMock: GSKHardwareDetailProviderMock!
     private let currentLibraryVersion = "10.0.10"
 
     override func setUp() {
         super.setUp()
-        localStorageMock = LocalStorageMock()
-        hardwareDetailProviderMock = HardwareDetailProviderMock()
+        localStorageMock = GSKLocalStorageMock()
+        hardwareDetailProviderMock = GSKHardwareDetailProviderMock()
         let testBundle = Bundle(for: type(of: self))
         let filePath = testBundle.path(forResource: "DeviceList", ofType: "plist")
-        sut = DeviceGuruImplementation(localStorage: localStorageMock,
-                                       hardwareDetailProvider: hardwareDetailProviderMock,
-                                       plistPath: filePath)
+        sut = GSKDeviceGuruImplementation(localStorage: localStorageMock,
+                                          hardwareDetailProvider: hardwareDetailProviderMock,
+                                          plistPath: filePath)
     }
 
     override func tearDown() {
@@ -36,17 +36,17 @@ final class DeviceGuruTests: XCTestCase {
         XCTAssertEqual(result, "iPhone SE (2nd generation)")
         XCTAssertEqual(localStorageMock.dictionary.keys.count, 2)
 
-        let hardwareDetail = localStorageMock.dictionary[Constants.hardwareDetailKey] as? [String: String]
+        let hardwareDetail = localStorageMock.dictionary[GSKTestConstants.hardwareDetailKey] as? [String: String]
         XCTAssertEqual(hardwareDetail, ["name": "iPhone SE (2nd generation)"])
 
-        let deviceGuruVersion = localStorageMock.dictionary[Constants.deviceGuruVersionKey] as? String
+        let deviceGuruVersion = localStorageMock.dictionary[GSKTestConstants.deviceGuruVersionKey] as? String
         XCTAssertEqual(deviceGuruVersion, currentLibraryVersion)
     }
 
     func testThatDeviceInfoIsFetchedForLocalStorageForSubsequentRequests() throws {
         // given
-        localStorageMock.dictionary[Constants.deviceGuruVersionKey] = currentLibraryVersion
-        localStorageMock.dictionary[Constants.hardwareDetailKey] = ["name": "Test_Device"]
+        localStorageMock.dictionary[GSKTestConstants.deviceGuruVersionKey] = currentLibraryVersion
+        localStorageMock.dictionary[GSKTestConstants.hardwareDetailKey] = ["name": "Test_Device"]
 
         // when
         let result = try sut.hardwareDescription()
@@ -59,8 +59,8 @@ final class DeviceGuruTests: XCTestCase {
 
     func testThatDeviceInfoIsLatestForLocalStorageForNewLibrary() throws {
         // given
-        localStorageMock.dictionary[Constants.deviceGuruVersionKey] = "9.9.9"
-        localStorageMock.dictionary[Constants.hardwareDetailKey] = ["name": "Test_Device"]
+        localStorageMock.dictionary[GSKTestConstants.deviceGuruVersionKey] = "9.9.9"
+        localStorageMock.dictionary[GSKTestConstants.hardwareDetailKey] = ["name": "Test_Device"]
 
         // when
         let result = try sut.hardwareDescription()
@@ -89,14 +89,14 @@ final class DeviceGuruTests: XCTestCase {
     func testHardwareVersion() throws {
         hardwareDetailProviderMock.hardwareString = "iPad8,10"
         let version = try sut.deviceVersion()
-        XCTAssertEqual(version, DeviceVersion(major: 8, minor: 10))
+        XCTAssertEqual(version, GSKDeviceVersion(major: 8, minor: 10))
     }
 
 }
 
 // MARK: - Platform
 
-extension DeviceGuruTests {
+extension GSKDeviceGuruTests {
 
     func testPlatformForIPhone() {
         hardwareDetailProviderMock.hardwareString = "iPhone12,8"
@@ -124,7 +124,7 @@ extension DeviceGuruTests {
     }
 }
 
-private enum Constants {
+private enum GSKTestConstants {
     static let hardwareDetailKey = "github.com/InderKumarRathore/DeviceGuru.HardwareDetail.Key"
     static let deviceGuruVersionKey = "github.com/InderKumarRathore/DeviceGuru.Version.Key"
 }
